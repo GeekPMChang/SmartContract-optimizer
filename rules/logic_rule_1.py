@@ -17,7 +17,7 @@ instance_counter = 0
 additional_lines = 0
 
 
-def check_rule(added_lines, file_content, statement):
+def check_rule(added_lines, file_content, statement, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
     if statement.condition.type == 'BinaryOperation' \
@@ -26,6 +26,7 @@ def check_rule(added_lines, file_content, statement):
         # found instance of deMorgan
         if statement.condition.operator == '&&' or statement.condition.operator == '||':
             apply_law_of_de_morgan(statement, file_content)
+            rule_list.append(file_name)
     return additional_lines
 
 

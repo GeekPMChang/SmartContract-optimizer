@@ -21,7 +21,7 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, function_statements, function_key, function_args, function_location):
+def check_rule(added_lines, file_content, function_statements, function_key, function_args, function_location, rule_list, file_name):
     global additional_lines, instance_counter
     additional_lines = added_lines
 
@@ -32,7 +32,8 @@ def check_rule(added_lines, file_content, function_statements, function_key, fun
     for statement in function_statements:
         if statement_contains_function_call(statement, function_key, function_args):
             add_comment_above(file_content, function_location)
-            print('### found instance of procedure rule 1; line: ' + str(function_location['start']['line']))
+            print('### found instance of recursion rule ; line: ' + str(function_location['start']['line']))
+            rule_list.append(file_name)
             instance_counter += 1
             return additional_lines
     return additional_lines

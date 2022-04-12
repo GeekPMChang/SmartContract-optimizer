@@ -19,7 +19,7 @@ instance_counter = 0
 additional_lines = 0
 
 
-def check_rule(added_lines, file_content, function_statements, statement):
+def check_rule(added_lines, file_content, function_statements, statement, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
     # Statement = bool variable declaration
@@ -32,6 +32,7 @@ def check_rule(added_lines, file_content, function_statements, statement):
                     # if the value is not modified afterwards
                     if not variable_is_modified_afterwards(function_statements, function_statement, statement, variable.name):
                         eliminate_bool_variable(file_content, statement, function_statement)
+                        rule_list.append(file_name)
     return additional_lines
 
 

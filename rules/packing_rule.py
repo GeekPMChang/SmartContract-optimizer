@@ -21,12 +21,19 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, statements):
+# Problem need to be fixed: False Positive
+
+# 3 circumstance in total
+#   1. find redeclarations  --completed
+#   2. reuse the temporary variables. --processing
+#   3. packing several varibles into a byte32 package to reduce the gas consumptions  --only understand the 
+
+def check_rule(added_lines, file_content, statements, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
 
     variable_declarations = get_declarations(statements)
-    get_usages(variable_declarations, statements)
+    get_usages(variable_declarations, statements,rule_list, file_name)
 
     # suche alle VariableDeclarations auf Ebene 0
     # Gruppiere diese Variablen nach Typ
@@ -51,7 +58,8 @@ def get_declarations(statements):
     return variable_declarations
 
 
-def get_usages(variable_declarations, statements):
+def get_usages(variable_declarations, statements, rule_list, file_name):
+    global instance_counter
     # kick out all variable types that occur only once
     to_delete = []
     for declaration in variable_declarations:
@@ -60,6 +68,9 @@ def get_usages(variable_declarations, statements):
         else:
             print('### found possible packing for variable type: ' + str(declaration))
             print('### variables of type ' + str(declaration)+ ": " + ",".join(variable_declarations[declaration]))
+    if len(to_delete)>1:
+        instance_counter += 1
+        rule_list.append(file_name)
     for var_type in to_delete:
         del variable_declarations[var_type]
 

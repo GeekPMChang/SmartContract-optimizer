@@ -1,0 +1,12 @@
+import os
+import subprocess
+
+
+files = []
+for r, d, f in os.walk("./input"):
+    for file in f:
+        files.append(os.path.join(r, file))
+
+for f in files :
+    cmd= 'sol-profiler ' + f
+    os.system(cmd)

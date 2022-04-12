@@ -19,7 +19,7 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, loop_statement):
+def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
 
@@ -27,11 +27,11 @@ def check_rule(added_lines, file_content, loop_statement):
             and loop_statement.initExpression.variables:
         loop_var_name = loop_statement.initExpression.variables[0].name
         if loop_statement.body and loop_statement.body.type == 'Block':
-            replace_trivial_assignment(loop_statement.body.statements, loop_var_name, file_content)
+            replace_trivial_assignment(loop_statement.body.statements, loop_var_name, file_content, rule_list, file_name)
     return additional_lines
 
 
-def replace_trivial_assignment(loop_statements, loop_var_name, file_content):
+def replace_trivial_assignment(loop_statements, loop_var_name, file_content, rule_list, file_name):
     global instance_counter
     for statement in loop_statements:
         if isinstance(statement, str):
@@ -46,6 +46,7 @@ def replace_trivial_assignment(loop_statements, loop_var_name, file_content):
             if not var_is_reset(loop_statements, statement, var_name):
                 print('### found instance of loop rule 4; line: ' + str(statement.loc['start']['line']))
                 instance_counter += 1
+                rule_list.append(file_name)
 
                 tabs_to_insert = ' ' * statement.loc['start']['column']
                 comment_line = '// ### PY_SOLOPT ### Found a rule violation of Loop Rule 4:\n'

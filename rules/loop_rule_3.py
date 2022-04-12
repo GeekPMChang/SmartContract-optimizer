@@ -19,7 +19,7 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, loop_statement):
+def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
     global additional_lines, instance_counter
     additional_lines = added_lines
 
@@ -61,11 +61,12 @@ def check_rule(added_lines, file_content, loop_statement):
                                     or (loop_statement.conditionExpression.operator == '>' and 0 < gt <= 8) \
                                     or (loop_statement.conditionExpression.operator == '>=' and 0 < gt < 8):
                                 unroll_loop(file_content, loop_statement, initial_value,
-                                            loop_statement.conditionExpression.operator, exit_value, loop_var_name)
+                                            loop_statement.conditionExpression.operator, exit_value, loop_var_name,rule_list, file_name)
                             else:
                                 print('### found instance of loop rule 3; line: ' + str(
                                     loop_statement.loc['start']['line']))
                                 instance_counter += 1
+                                rule_list.append(file_name)
                                 # add comment
                                 loop_location = loop_statement.loc
                                 loop_line = loop_location['start']['line'] - 1 + additional_lines
@@ -80,7 +81,7 @@ def check_rule(added_lines, file_content, loop_statement):
     return additional_lines
 
 
-def unroll_loop(file_content, loop_statement, start_value, condition_operator, exit_value, var_name):
+def unroll_loop(file_content, loop_statement, start_value, condition_operator, exit_value, var_name,rule_list, file_name):
     global additional_lines, instance_counter
 
     loop_statements = {}
@@ -127,6 +128,7 @@ def unroll_loop(file_content, loop_statement, start_value, condition_operator, e
 
     print('### found instance of loop rule 3; line: ' + str(loop_statement.loc['start']['line']))
     instance_counter += 1
+    rule_list.append(file_name)
 
 
 def add_loop_content(file_content, loop_line, tabs, statements, variable_name, variable_value):

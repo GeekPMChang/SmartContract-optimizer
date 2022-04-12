@@ -20,7 +20,7 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, loop_statement):
+def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
     global additional_lines, instance_counter
     additional_lines = added_lines
 
@@ -62,6 +62,7 @@ def check_rule(added_lines, file_content, loop_statement):
                             print('### found instance of loop rule 5; line: '
                                   + str(loop_statement.loc['start']['line']))
                             replace_loop(loop_statement, file_content)
+                            rule_list.append(file_name)
                             instance_counter += 1
     return additional_lines
 

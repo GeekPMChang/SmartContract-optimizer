@@ -14,11 +14,14 @@
 #   只有一个条件语句                               #
 #################################################
 
+from re import fullmatch
+
+
 additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, loop_statement):
+def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
     global additional_lines, instance_counter
     additional_lines = added_lines
     if loop_statement.type == 'WhileStatement' or loop_statement.type == 'DoWhileStatement':
@@ -28,6 +31,7 @@ def check_rule(added_lines, file_content, loop_statement):
             print('### found instance of loop rule 2; line: '
                   + str(loop_statement.loc['start']['line'] + additional_lines))
             instance_counter += 1
+            rule_list.append(file_name)
     elif loop_statement.type == 'ForStatement':
         if (loop_statement.conditionExpression and loop_statement.conditionExpression.type == 'BinaryOperation'
                 and (loop_statement.conditionExpression.operator == '&&'
@@ -36,6 +40,7 @@ def check_rule(added_lines, file_content, loop_statement):
             print('### found instance of loop rule 2; line: '
                   + str(loop_statement.loc['start']['line'] + additional_lines))
             instance_counter += 1
+            rule_list.append(file_name)
     return additional_lines
 
 

@@ -1,3 +1,4 @@
+from logging import logProcesses
 import sys
 import os
 import ntpath
@@ -9,13 +10,27 @@ import ssl
 from solidity_parser import parser
 
 import evaluation
+from optimized_file_output import optimizedFileOutput
+import gas_calculation
 from rules import loop_rule_1, logic_rule_1, logic_rule_2, recursion_rule, loop_rule_2, \
-    loop_rule_3, loop_rule_4, loop_rule_5, loop_rule_6
+    loop_rule_3, loop_rule_4, loop_rule_5, loop_rule_6, packing_rule
 
 
 
 def main():
     requests.packages.urllib3.disable_warnings()
+    
+    logic_rule_1_list=[]
+    logic_rule_2_list=[]
+    loop_rule_1_list=[]
+    loop_rule_2_list=[]
+    loop_rule_3_list=[]
+    loop_rule_4_list=[]
+    loop_rule_5_list=[]
+    loop_rule_6_list=[]
+    packing_rule_list=[]
+    recursion_rule_list=[]
+    
     if len(sys.argv) > 1:
         if sys.argv[1] == '-initialize':
             initialize()
@@ -37,7 +52,7 @@ def main():
             return 0
     else:
         files = []
-        for r, d, f in os.walk("./input/data_from_etherscan/origin-contract"):
+        for r, d, f in os.walk("./input"):
             for file in f:
                 files.append(os.path.join(r, file))
 
@@ -52,6 +67,10 @@ def main():
                 file = open(f, "r", encoding='utf8')
                 text = file.read()
                 # text -- the original smart contract
+                '''
+                original_gasUsed=gas_calculation.calculate_gasUsed(text)
+                print('original gasUsed: '+ str(original_gasUsed))
+                '''
                 
                 # TODO: replace all \t characters with spaces
                 try:
@@ -63,7 +82,7 @@ def main():
 
                 # create output file
                 input_file = open(f, "r", encoding='utf8')
-                output_file = open('./output/optimized/origin-optimized/' + ntpath.basename(f), 'w', encoding='utf8')
+                output_file = open('./output/optimized/' + ntpath.basename(f), 'w', encoding='utf8')
                 content = input_file.readlines()
 
                 # get all functions from all contracts in the file
@@ -83,10 +102,14 @@ def main():
                         function_body = function._node.body
                         if function_body:
                             statements = function_body.statements
-                            ##### PROCEDURE RULE 1 ######
+                            
+                            ##### RECURSION RULE ######
                             additional_lines = recursion_rule.check_rule(additional_lines, content,
                                                                            statements, function_key,
-                                                                           function.arguments, function._node.loc)
+                                                                           function.arguments, function._node.loc,recursion_rule_list,f)
+                            ##### PACKING RULE ######
+                            # additional_lines = packing_rule.check_rule(additional_lines, content, statements,packing_rule_list,f)
+                            
                             first_for_statement = None
                             for statement in statements:
                                 if isinstance(statement, str):
@@ -96,7 +119,7 @@ def main():
                                 if statement:
                                     ###### LOGIC RULE 1 ######
                                     if statement.type == 'IfStatement':
-                                        additional_lines = logic_rule_1.check_rule(additional_lines, content, statement)
+                                        additional_lines = logic_rule_1.check_rule(additional_lines, content, statement,logic_rule_1_list,f)
 
                                     ###### LOGIC RULE 2 ######
                                     if statement.type == 'VariableDeclarationStatement' and statement.variables \
@@ -106,38 +129,38 @@ def main():
                                                     and variable.typeName.type == 'ElementaryTypeName' \
                                                     and variable.typeName.name == 'bool':
                                                 additional_lines = logic_rule_2.check_rule(additional_lines, content,
-                                                                                           statements, statement)
+                                                                                           statements, statement,logic_rule_2_list,f)
 
                                     ###### LOOP RULE 1 ######
                                     if statement.type == 'ForStatement':
                                         additional_lines = loop_rule_1.check_rule(additional_lines, content, statement,
-                                                                                  all_functions)
+                                                                                  all_functions,loop_rule_1_list,f)
 
                                     ###### LOOP RULE 2 ######
                                     if statement.type in loop_statements:
-                                        additional_lines = loop_rule_2.check_rule(additional_lines, content, statement)
+                                        additional_lines = loop_rule_2.check_rule(additional_lines, content, statement,loop_rule_2_list,f)
 
                                     ###### LOOP RULE 3 ######
                                     if statement.type == 'ForStatement':
-                                        additional_lines = loop_rule_3.check_rule(additional_lines, content, statement)
+                                        additional_lines = loop_rule_3.check_rule(additional_lines, content, statement,loop_rule_3_list,f)
 
                                     ###### LOOP RULE 4 ######
                                     if statement.type == 'ForStatement':
-                                        additional_lines = loop_rule_4.check_rule(additional_lines, content, statement)
+                                        additional_lines = loop_rule_4.check_rule(additional_lines, content, statement,loop_rule_4_list,f)
 
                                     ###### LOOP RULE 5 ######
                                     if statement.type == 'ForStatement':
-                                        additional_lines = loop_rule_5.check_rule(additional_lines, content, statement)
+                                        additional_lines = loop_rule_5.check_rule(additional_lines, content, statement,loop_rule_5_list,f)
 
                                     ###### LOOP RULE 6 ######
                                     if statement.type == 'ForStatement':
                                         if first_for_statement is not None:
                                             additional_lines = loop_rule_6.check_rule(additional_lines, content,
-                                                                                      first_for_statement, statement)
+                                                                                      first_for_statement, statement,loop_rule_6_list,f)
                                         first_for_statement = statement
                                     else:
                                         first_for_statement = None
-
+                
                 # content -- the optimized smart contract
                 # write output
                 output_file.writelines(content)
@@ -146,19 +169,21 @@ def main():
         print('########################################################################')
         print('#########                SUMMARY OF RESULTS                    #########')
         print('########################################################################')
-        print('#########                '+str(files.__len__())+'                    #########')
+        print('#########                     '+str(files.__len__())+'                         #########')
         print('########################################################################')
+        print('######### number of instances                 logic rule 1: ' + str(logic_rule_1.get_instance_counter()))
+        print('######### number of instances                 logic rule 2: ' + str(logic_rule_2.get_instance_counter()))
         print('######### number of instances                 loop rule 1: ' + str(loop_rule_1.get_instance_counter()))
         print('######### number of instances                 loop rule 2: ' + str(loop_rule_2.get_instance_counter()))
         print('######### number of instances                 loop rule 3: ' + str(loop_rule_3.get_instance_counter()))
         print('######### number of instances                 loop rule 4: ' + str(loop_rule_4.get_instance_counter()))
         print('######### number of instances                 loop rule 5: ' + str(loop_rule_5.get_instance_counter()))
         print('######### number of instances                 loop rule 6: ' + str(loop_rule_6.get_instance_counter()))
-        print('######### number of instances                 logic rule 1: ' + str(logic_rule_1.get_instance_counter()))
-        print('######### number of instances                 logic rule 2: ' + str(logic_rule_2.get_instance_counter()))
         print('######### number of instances                 recursion rule: ' + str(recursion_rule.get_instance_counter()))
         print('########################################################################')
-
+        
+        optimized_list=[logic_rule_1_list, logic_rule_2_list, loop_rule_1_list, loop_rule_2_list, loop_rule_3_list, loop_rule_4_list, loop_rule_5_list, loop_rule_6_list, recursion_rule_list, packing_rule_list]
+        optimizedFileOutput(optimized_list)
 
 def preprocess():
     files = []

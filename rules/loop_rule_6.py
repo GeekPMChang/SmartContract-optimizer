@@ -19,7 +19,7 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, first_loop, second_loop):
+def check_rule(added_lines, file_content, first_loop, second_loop, rule_list, file_name):
     global additional_lines, instance_counter
     additional_lines = added_lines
     if first_loop.initExpression and first_loop.initExpression.type == 'VariableDeclarationStatement' \
@@ -42,6 +42,7 @@ def check_rule(added_lines, file_content, first_loop, second_loop):
             comment_line = '// ### PY_SOLOPT ### Found a rule violation of Loop Rule 6 - Loop fusion.\n'
             tabs_to_insert = ' ' * first_loop.loc['start']['column']
             print('### found instance of loop rule 6; line: ' + str(first_loop_location))
+            rule_list.append(file_name)
             file_content.insert(first_loop_location, tabs_to_insert + comment_line)
             instance_counter += 1
     return additional_lines

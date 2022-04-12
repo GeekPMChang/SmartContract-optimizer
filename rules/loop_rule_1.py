@@ -19,7 +19,7 @@ additional_lines = 0
 instance_counter = 0
 
 
-def check_rule(added_lines, file_content, loop_statement, functions):
+def check_rule(added_lines, file_content, loop_statement, functions, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
     loop_expressions = loop_statement.initExpression
@@ -38,14 +38,14 @@ def check_rule(added_lines, file_content, loop_statement, functions):
         if loop_body.type == 'Block':
             for loop_statement in loop_body.statements:
                 if not isinstance(loop_statement, str) and loop_statement.type == 'VariableDeclarationStatement':
-                    move_statement_up(file_content, loop_statement, loop_location, variable.name, functions, loop_body)
+                    move_statement_up(file_content, loop_statement, loop_location, variable.name, functions, loop_body, rule_list, file_name)
         elif loop_body.type == 'ExpressionStatement':
             # loop inline. example: "for (uint i = 0; i < _ba.length; i++) babc[k++] = _ba[i];"
             return additional_lines
     return additional_lines
 
 
-def move_statement_up(file_content, loop_statement, loop_location, variable_name, functions, loop_body):
+def move_statement_up(file_content, loop_statement, loop_location, variable_name, functions, loop_body, rule_list, file_name):
     global instance_counter
     loop_line = loop_location['start']['line'] - 1 + additional_lines
     tabs_to_insert = ' ' * loop_location['start']['column']
@@ -59,6 +59,7 @@ def move_statement_up(file_content, loop_statement, loop_location, variable_name
         #         }
         print('### found instance of loop rule 1; line: ' + str(loop_line))
         instance_counter += 1
+        rule_list.append(file_name)
 
         line_to_move = loop_statement.loc['start']['line'] - 1 + additional_lines
         statement_start = loop_statement.loc['start']['column']
@@ -69,6 +70,7 @@ def move_statement_up(file_content, loop_statement, loop_location, variable_name
     elif statement_contains_pure_function_call(file_content, loop_location, loop_statement, variable_name, functions):
         print('### found instance of loop rule 1 in function call')
         instance_counter += 1
+        rule_list.append(file_name)
 
 
 def statement_contains_pure_function_call(file_content, loop_location, loop_statement, variable_name, functions):
