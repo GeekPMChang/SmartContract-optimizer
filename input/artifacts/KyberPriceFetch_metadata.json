@@ -1,0 +1,74 @@
+{
+	"compiler": {
+		"version": "0.5.17+commit.d19bba13"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"internalType": "contract IERC20Token[]",
+						"name": "_tokens",
+						"type": "address[]"
+					}
+				],
+				"name": "getPrices",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "contract IERC20Token[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"input/KyberPriceFetch.sol": "KyberPriceFetch"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"input/KyberPriceFetch.sol": {
+			"keccak256": "0x25013f7a353db6b5de92374248a6521d7c967afbb5b8d92c8605948265fcb232",
+			"urls": [
+				"bzz-raw://aeb975bd60335386073c63013800b3e8615e8f8e4bcdcc07d54f2c1ce76a00b7",
+				"dweb:/ipfs/QmYU8MAc3zX79hUTzZr249C8ryybWTmRjTDkwSgyrgeRVM"
+			]
+		}
+	},
+	"version": 1
+}

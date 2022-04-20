@@ -1,0 +1,53 @@
+{
+	"compiler": {
+		"version": "0.5.17+commit.d19bba13"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "decimals",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"input/KyberPriceFetch.sol": "IERC20Token"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"input/KyberPriceFetch.sol": {
+			"keccak256": "0x25013f7a353db6b5de92374248a6521d7c967afbb5b8d92c8605948265fcb232",
+			"urls": [
+				"bzz-raw://aeb975bd60335386073c63013800b3e8615e8f8e4bcdcc07d54f2c1ce76a00b7",
+				"dweb:/ipfs/QmYU8MAc3zX79hUTzZr249C8ryybWTmRjTDkwSgyrgeRVM"
+			]
+		}
+	},
+	"version": 1
+}

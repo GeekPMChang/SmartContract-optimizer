@@ -17,9 +17,10 @@ import uuid
 
 additional_lines = 0
 instance_counter = 0
+loop1_dict = {}
 
 
-def check_rule(added_lines, file_content, loop_statement, functions, rule_list, file_name):
+def check_rule(added_lines, file_content, loop_statement, functions, contract_name, function_key, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
     loop_expressions = loop_statement.initExpression
@@ -38,15 +39,16 @@ def check_rule(added_lines, file_content, loop_statement, functions, rule_list, 
         if loop_body.type == 'Block':
             for loop_statement in loop_body.statements:
                 if not isinstance(loop_statement, str) and loop_statement.type == 'VariableDeclarationStatement':
-                    move_statement_up(file_content, loop_statement, loop_location, variable.name, functions, loop_body, rule_list, file_name)
+                    move_statement_up(file_content, loop_statement, loop_location, variable.name, functions, loop_body, rule_list, file_name, contract_name, function_key)
         elif loop_body.type == 'ExpressionStatement':
             # loop inline. example: "for (uint i = 0; i < _ba.length; i++) babc[k++] = _ba[i];"
             return additional_lines
     return additional_lines
 
 
-def move_statement_up(file_content, loop_statement, loop_location, variable_name, functions, loop_body, rule_list, file_name):
+def move_statement_up(file_content, loop_statement, loop_location, variable_name, functions, loop_body, rule_list, file_name, contract_name, function_key):
     global instance_counter
+    global loop1_dict
     loop_line = loop_location['start']['line'] - 1 + additional_lines
     tabs_to_insert = ' ' * loop_location['start']['column']
 
@@ -57,7 +59,8 @@ def move_statement_up(file_content, loop_statement, loop_location, variable_name
         #             uint256 previousResult = result; # can't move this line up
         #             result = previousResult.mul(a);
         #         }
-        print('### found instance of loop rule 1; line: ' + str(loop_line))
+        print('### Applied LOOP_RULE1 rule at '+contract_name+'--'+function_key+': line: '+ str(loop_line))
+        loop1_dict[contract_name] = 1 
         instance_counter += 1
         rule_list.append(file_name)
 
@@ -68,7 +71,8 @@ def move_statement_up(file_content, loop_statement, loop_location, variable_name
         del file_content[line_to_move]
         file_content.insert(loop_line, statement_to_insert + "\n")
     elif statement_contains_pure_function_call(file_content, loop_location, loop_statement, variable_name, functions):
-        print('### found instance of loop rule 1 in function call')
+        print('### Applied LOOP_RULE1 rule (fuction call) at '+contract_name+'--'+function_key)
+        loop1_dict[contract_name] = 1 
         instance_counter += 1
         rule_list.append(file_name)
 
@@ -258,3 +262,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def loop1_dict_counter():
+    global loop1_dict
+    loop1_count = 0
+    for item in loop1_dict.keys():
+        if loop1_dict[item]== 1 :
+            loop1_count += 1
+    return loop1_count

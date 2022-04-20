@@ -15,10 +15,14 @@
 #   那么同一个变量可以用于不同的事情                  #
 #################################################
 
+from glob import glob
+from pickle import FALSE
 import pprint
+from struct import pack
 
 additional_lines = 0
 instance_counter = 0
+packing_dict = {}
 
 
 # Problem need to be fixed: False Positive
@@ -26,21 +30,13 @@ instance_counter = 0
 # 3 circumstance in total
 #   1. find redeclarations  --completed
 #   2. reuse the temporary variables. --processing
-#   3. packing several varibles into a byte32 package to reduce the gas consumptions  --only understand the 
 
-def check_rule(added_lines, file_content, statements, rule_list, file_name):
+def check_rule(added_lines, file_content, statements, contract_name, function_key,rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
 
     variable_declarations = get_declarations(statements)
-    get_usages(variable_declarations, statements,rule_list, file_name)
-
-    # suche alle VariableDeclarations auf Ebene 0
-    # Gruppiere diese Variablen nach Typ
-    # Check verwendung jeder variablen (Ebenen)
-    # z.B.  Variable 1 wird verwendet auf Ebene 0, Ebene 1, Ebene 2.
-    #       Variable 2 wird verwendet auf Ebene 3, Ebene 4
-    #       -> Variable 2 kann durch Variable 1 ersetzt werden.
+    get_usages(variable_declarations, statements, contract_name, function_key, rule_list, file_name)
 
     return additional_lines
 
@@ -58,18 +54,22 @@ def get_declarations(statements):
     return variable_declarations
 
 
-def get_usages(variable_declarations, statements, rule_list, file_name):
+def get_usages(variable_declarations, statements, contract_name, function_key, rule_list, file_name,):
     global instance_counter
+    global contract_counter
+    global packing_dict
+    
     # kick out all variable types that occur only once
     to_delete = []
     for declaration in variable_declarations:
         if len(variable_declarations[declaration]) == 1:
             to_delete.append(declaration)
         else:
-            print('### found possible packing for variable type: ' + str(declaration))
+            print('### Applied packing rule at ' + contract_name+'--' + function_key+' : '+ str(declaration))
             print('### variables of type ' + str(declaration)+ ": " + ",".join(variable_declarations[declaration]))
     if len(to_delete)>1:
         instance_counter += 1
+        packing_dict[contract_name] = 1
         rule_list.append(file_name)
     for var_type in to_delete:
         del variable_declarations[var_type]
@@ -243,3 +243,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def packing_dict_counter():
+    global packing_dict
+    packing_count = 0
+    for item in packing_dict.keys():
+        if packing_dict[item]== 1 :
+            packing_count += 1
+    return packing_count

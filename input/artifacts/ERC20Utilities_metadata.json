@@ -1,0 +1,126 @@
+{
+	"compiler": {
+		"version": "0.4.26+commit.4563c3fc"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "tokenBalance",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "tokens",
+						"type": "address[]"
+					}
+				],
+				"name": "batchTokenDecimals",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "users",
+						"type": "address[]"
+					},
+					{
+						"name": "tokens",
+						"type": "address[]"
+					}
+				],
+				"name": "batchTokenBalances",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "tokenDecimals",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"payable": true,
+				"stateMutability": "payable",
+				"type": "fallback"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"input/ERC20Utilities.sol": "ERC20Utilities"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"input/ERC20Utilities.sol": {
+			"keccak256": "0x7548c86dd6a1f57b34cf472d58dd3abb33f2f0bdc0da75c6e134d6f5a9cde7cf",
+			"urls": [
+				"bzzr://fd6b0d8e278f913b23559a717d1d1221ea8daf398a988c673130001d91658617"
+			]
+		}
+	},
+	"version": 1
+}

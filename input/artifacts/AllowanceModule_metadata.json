@@ -1,0 +1,590 @@
+{
+	"compiler": {
+		"version": "0.5.10+commit.5a6ea5b1"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "DOMAIN_SEPARATOR_TYPEHASH",
+				"outputs": [
+					{
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "delegatesStart",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint48"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "ALLOWANCE_TRANSFER_TYPEHASH",
+				"outputs": [
+					{
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"name": "amount",
+						"type": "uint96"
+					},
+					{
+						"name": "paymentToken",
+						"type": "address"
+					},
+					{
+						"name": "payment",
+						"type": "uint96"
+					},
+					{
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"name": "signature",
+						"type": "bytes"
+					}
+				],
+				"name": "executeAllowanceTransfer",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "delegate",
+						"type": "address"
+					}
+				],
+				"name": "removeDelegate",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"name": "delegate",
+						"type": "address"
+					}
+				],
+				"name": "getTokens",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "getTokenAllowance",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256[5]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "NAME",
+				"outputs": [
+					{
+						"name": "",
+						"type": "string"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "address"
+					},
+					{
+						"name": "",
+						"type": "address"
+					},
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "allowances",
+				"outputs": [
+					{
+						"name": "amount",
+						"type": "uint96"
+					},
+					{
+						"name": "spent",
+						"type": "uint96"
+					},
+					{
+						"name": "resetTimeMin",
+						"type": "uint16"
+					},
+					{
+						"name": "lastResetMin",
+						"type": "uint32"
+					},
+					{
+						"name": "nonce",
+						"type": "uint16"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"name": "allowanceAmount",
+						"type": "uint96"
+					},
+					{
+						"name": "resetTimeMin",
+						"type": "uint16"
+					},
+					{
+						"name": "resetBaseMin",
+						"type": "uint32"
+					}
+				],
+				"name": "setAllowance",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "resetAllowance",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "address"
+					},
+					{
+						"name": "",
+						"type": "uint48"
+					}
+				],
+				"name": "delegates",
+				"outputs": [
+					{
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"name": "prev",
+						"type": "uint48"
+					},
+					{
+						"name": "next",
+						"type": "uint48"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"name": "amount",
+						"type": "uint96"
+					},
+					{
+						"name": "paymentToken",
+						"type": "address"
+					},
+					{
+						"name": "payment",
+						"type": "uint96"
+					},
+					{
+						"name": "nonce",
+						"type": "uint16"
+					}
+				],
+				"name": "generateTransferHash",
+				"outputs": [
+					{
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "delegate",
+						"type": "address"
+					}
+				],
+				"name": "addDelegate",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"name": "start",
+						"type": "uint48"
+					},
+					{
+						"name": "pageSize",
+						"type": "uint8"
+					}
+				],
+				"name": "getDelegates",
+				"outputs": [
+					{
+						"name": "results",
+						"type": "address[]"
+					},
+					{
+						"name": "next",
+						"type": "uint48"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "address"
+					},
+					{
+						"name": "",
+						"type": "address"
+					},
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "tokens",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "domainSeparator",
+				"outputs": [
+					{
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "VERSION",
+				"outputs": [
+					{
+						"name": "",
+						"type": "string"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "delegate",
+						"type": "address"
+					}
+				],
+				"name": "AddDelegate",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "delegate",
+						"type": "address"
+					}
+				],
+				"name": "RemoveDelegate",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "value",
+						"type": "uint96"
+					},
+					{
+						"indexed": false,
+						"name": "nonce",
+						"type": "uint16"
+					}
+				],
+				"name": "ExecuteAllowanceTransfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "safe",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "delegate",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "allowanceAmount",
+						"type": "uint96"
+					},
+					{
+						"indexed": false,
+						"name": "resetTime",
+						"type": "uint16"
+					}
+				],
+				"name": "SetAllowance",
+				"type": "event"
+			}
+		],
+		"devdoc": {
+			"methods": {
+				"setAllowance(address,address,uint96,uint16,uint32)": {
+					"details": "Allows to update the allowance for a specified token. This can only be done via a Safe transaction.",
+					"params": {
+						"allowanceAmount": "allowance in smallest token unit.",
+						"delegate": "Delegate whose allowance should be updated.",
+						"resetBaseMin": "Time based on which the reset time should be increased",
+						"resetTimeMin": "Time after which the allowance should reset",
+						"token": "Token contract address."
+					}
+				}
+			}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"input/AllowanceModule.sol": "AllowanceModule"
+		},
+		"evmVersion": "petersburg",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"input/AllowanceModule.sol": {
+			"keccak256": "0xeee537f1047709f0539aae239cc1ae1bab8865d644d480c26698cdd2051c9020",
+			"urls": [
+				"bzzr://ad2236eea0e82a7b47f8d0e76a615b441390417ab53acf9de0970f92076689ea",
+				"dweb:/ipfs/QmPa1VBsL7jm7HJvC8jidzKfoKrwYjaX6t8bj26DA6657Q"
+			]
+		}
+	},
+	"version": 1
+}

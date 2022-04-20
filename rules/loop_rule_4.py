@@ -17,9 +17,10 @@
 
 additional_lines = 0
 instance_counter = 0
+loop4_dict = {}
 
 
-def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
+def check_rule(added_lines, file_content, loop_statement, contract_name, function_key, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
 
@@ -27,12 +28,13 @@ def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
             and loop_statement.initExpression.variables:
         loop_var_name = loop_statement.initExpression.variables[0].name
         if loop_statement.body and loop_statement.body.type == 'Block':
-            replace_trivial_assignment(loop_statement.body.statements, loop_var_name, file_content, rule_list, file_name)
+            replace_trivial_assignment(loop_statement.body.statements, loop_var_name, file_content, contract_name, function_key,rule_list, file_name)
     return additional_lines
 
 
-def replace_trivial_assignment(loop_statements, loop_var_name, file_content, rule_list, file_name):
+def replace_trivial_assignment(loop_statements, loop_var_name, file_content, contract_name, function_key, rule_list, file_name):
     global instance_counter
+    global loop4_dict
     for statement in loop_statements:
         if isinstance(statement, str):
             # would result in an AttributeError when there is no statement type. example: 'throw;' or 'break;'
@@ -44,7 +46,8 @@ def replace_trivial_assignment(loop_statements, loop_var_name, file_content, rul
                 and statement.initialValue.name == loop_var_name:
             var_name = statement.variables[0].name
             if not var_is_reset(loop_statements, statement, var_name):
-                print('### found instance of loop rule 4; line: ' + str(statement.loc['start']['line']))
+                print('### Applied LOOP_RULE4 rule at '+contract_name+'--'+function_key+': line: ' + str(statement.loc['start']['line']))
+                loop4_dict[contract_name] = 1
                 instance_counter += 1
                 rule_list.append(file_name)
 
@@ -115,3 +118,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def loop4_dict_counter():
+    global loop4_dict
+    loop4_count = 0
+    for item in loop4_dict.keys():
+        if loop4_dict[item]== 1 :
+            loop4_count += 1
+    return loop4_count

@@ -1,0 +1,38 @@
+{
+	"compiler": {
+		"version": "0.5.10+commit.5a6ea5b1"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"details": "Collection of functions related to the address type,",
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"input/NOIAVault.sol": "Address"
+		},
+		"evmVersion": "petersburg",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"input/NOIAVault.sol": {
+			"keccak256": "0xecff2266fd5b3ee54e50b1450baf1176a05d9849763839a32a8180c18aecea1d",
+			"urls": [
+				"bzzr://9671e470066aaaeda43e1d3ec4c6ad0bae7cd11581531b426286a758e7b23d9a",
+				"dweb:/ipfs/QmUT8DY1fuLDk5GwM1XmhW1DntRG3kGE8M7GJrK6dTf16c"
+			]
+		}
+	},
+	"version": 1
+}

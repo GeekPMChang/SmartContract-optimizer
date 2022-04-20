@@ -18,10 +18,12 @@
 
 additional_lines = 0
 instance_counter = 0
+loop5_dict = {}
 
 
-def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
+def check_rule(added_lines, file_content, loop_statement, contract_name, function_key, rule_list, file_name):
     global additional_lines, instance_counter
+    global loop5_dict
     additional_lines = added_lines
 
     if (loop_statement.conditionExpression and loop_statement.conditionExpression.type == 'BinaryOperation'
@@ -59,10 +61,11 @@ def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
                                 or (loop_statement.conditionExpression.operator == '<=' and lt_loop_runs >= 0) \
                                 or (loop_statement.conditionExpression.operator == '>' and gt_loop_runs > 0) \
                                 or (loop_statement.conditionExpression.operator == '>=' and gt_loop_runs >= 0):
-                            print('### found instance of loop rule 5; line: '
+                            print('### Applied LOOP_RULE5 rule at '+contract_name+'--'+function_key+': line: '
                                   + str(loop_statement.loc['start']['line']))
                             replace_loop(loop_statement, file_content)
                             rule_list.append(file_name)
+                            loop5_dict[contract_name] = 1 
                             instance_counter += 1
     return additional_lines
 
@@ -113,3 +116,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def loop5_dict_counter():
+    global loop5_dict
+    loop5_count = 0
+    for item in loop5_dict.keys():
+        if loop5_dict[item]== 1 :
+            loop5_count += 1
+    return loop5_count

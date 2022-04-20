@@ -17,12 +17,17 @@
 #   因此，迭代算法应始终优于递归算法。                #
 #################################################
 
+from glob import glob
+
+
 additional_lines = 0
 instance_counter = 0
+recursion_dict = {}
 
 
-def check_rule(added_lines, file_content, function_statements, function_key, function_args, function_location, rule_list, file_name):
+def check_rule(added_lines, file_content, function_statements, contract_name,function_key, function_args, function_location, rule_list, file_name):
     global additional_lines, instance_counter
+    global recursion_dict
     additional_lines = added_lines
 
     if function_key is None:
@@ -32,8 +37,9 @@ def check_rule(added_lines, file_content, function_statements, function_key, fun
     for statement in function_statements:
         if statement_contains_function_call(statement, function_key, function_args):
             add_comment_above(file_content, function_location)
-            print('### found instance of recursion rule ; line: ' + str(function_location['start']['line']))
+            print('### Applied recursion rule at '+contract_name+'--'+function_key+': line: ' + str(function_location['start']['line']))
             rule_list.append(file_name)
+            recursion_dict[contract_name] = 1
             instance_counter += 1
             return additional_lines
     return additional_lines
@@ -111,3 +117,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def recursion_dict_counter():
+    global recursion_dict
+    recursion_count = 0
+    for item in recursion_dict.keys():
+        if recursion_dict[item]== 1 :
+            recursion_count += 1
+    return recursion_count

@@ -20,6 +20,8 @@ from rules import loop_rule_1, logic_rule_1, logic_rule_2, recursion_rule, loop_
 def main():
     requests.packages.urllib3.disable_warnings()
     
+    error_contract_counter = 0
+    
     logic_rule_1_list=[]
     logic_rule_2_list=[]
     loop_rule_1_list=[]
@@ -76,11 +78,13 @@ def main():
                 try:
                     source_unit = parser.parse(text=text, loc=True)
                 except (TypeError, AttributeError):
+                    error_contract_counter+=1
                     continue
                 source_unit_object = parser.objectify(source_unit)
+                # source_unit_object:<solidity_parser.parser.objectify.<locals>.ObjectifySourceUnitVisitor object at 0x7f7811a0fca0>
                 contracts = source_unit_object.contracts.keys()
+                # contracts dictionary: smart contracts list {['SafeMath','ERC20','BountyBoard']}
 
-                # create output file
                 input_file = open(f, "r", encoding='utf8')
                 output_file = open('./output/optimized/' + ntpath.basename(f), 'w', encoding='utf8')
                 content = input_file.readlines()
@@ -88,7 +92,15 @@ def main():
                 # get all functions from all contracts in the file
                 all_functions = {}
                 for contract in contracts:
+                # contract: a particular smart contract's name
                     function_dictionary = source_unit_object.contracts[contract].functions
+                    '''
+                    {'add': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b550>, 
+                    'sub': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b070>, 
+                    'mul': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b310>, 
+                    'div': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b1c0>, 
+                    'mod': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0ba30>}
+                    '''
                     all_functions = {**all_functions, **function_dictionary}
 
                 loop_statements = ['ForStatement', 'WhileStatement', 'DoWhileStatement']
@@ -96,19 +108,77 @@ def main():
                 # process rules
                 for contract in contracts:
                     functions = source_unit_object.contracts[contract].functions
+                    # functions: the dictionary of all the fuctions in contract
+                    '''
+                    the example of functions
+                    {'add': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b550>, 
+                    'sub': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b070>, 
+                    'mul': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b310>, 
+                    'div': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0b1c0>, 
+                    'mod': <solidity_parser.parser.objectify.<locals>.ObjectifyContractVisitor.visitFunctionDefinition.<locals>.FunctionObject object at 0x7f7830b0ba30>}
+                    '''
                     function_keys = source_unit_object.contracts[contract].functions.keys()
+                    # function_keys: the key in dictionary of fuction
+                    '''
+                    the example of function_keys
+                    {'add','sub','mul','div','mod'}
+                    '''
                     for function_key in function_keys:
                         function = functions[function_key]
                         function_body = function._node.body
+                        # fuction: the struct of functions[function_key]
+                        # fuction_body: the analyzed information of a function (example: function--'add' )
+                        '''
+                        the example of function_body
+                        {'type': 'Block', 
+                        'statements': 
+                            [{'type': 'VariableDeclarationStatement', 
+                            'variables': [{'type': 'VariableDeclaration', 
+                            'typeName': {'type': 'ElementaryTypeName', 
+                            'name': 'uint256', 
+                            'loc': 
+                                {'start': {'line': 27, 'column': 8}, 
+                                'end': {'line': 27, 'column': 8}}}, 
+                            'name': 'c', 
+                            'storageLocation': None, 
+                            'loc': 
+                                {'start': {'line': 27, 'column': 8}, 
+                                'end': {'line': 27, 'column': 16}}}], 
+                            'initialValue': 
+                                {'type': 'BinaryOperation', 
+                                'operator': '+', 
+                                'left': 
+                                    {'type': 'Identifier', 
+                                    'name': 'a', 
+                                    'loc': 
+                                        {'start': {'line': 27, 'column': 20}, 
+                                        'end': {'line': 27, 'column': 20}}}, 
+                                'right': 
+                                    {'type': 'Identifier', 
+                                    'name': 'b', 
+                                    'loc': 
+                                        {'start': {'line': 27, 'column': 24}, 
+                                        'end': {'line': 27, 'column': 24}}}, 
+                                'loc': 
+                                    {'start': {'line': 27, 'column': 20}, 
+                                    'end': {'line': 27, 'column': 24}}}}
+                        '''
                         if function_body:
                             statements = function_body.statements
+                            # statements: the statements part of function_body (the result of parser-analyzer)
                             
                             ##### RECURSION RULE ######
+                            # contract: the optimizing smart contract's name
+                            # function_key: the optimizing smart contract's name
+                            
                             additional_lines = recursion_rule.check_rule(additional_lines, content,
-                                                                           statements, function_key,
+                                                                           statements, contract,function_key,
                                                                            function.arguments, function._node.loc,recursion_rule_list,f)
                             ##### PACKING RULE ######
-                            # additional_lines = packing_rule.check_rule(additional_lines, content, statements,packing_rule_list,f)
+                            try:
+                                additional_lines = packing_rule.check_rule(additional_lines, content, statements, contract, function_key, packing_rule_list,f)
+                            except (TypeError, AttributeError):
+                                continue
                             
                             first_for_statement = None
                             for statement in statements:
@@ -119,7 +189,7 @@ def main():
                                 if statement:
                                     ###### LOGIC RULE 1 ######
                                     if statement.type == 'IfStatement':
-                                        additional_lines = logic_rule_1.check_rule(additional_lines, content, statement,logic_rule_1_list,f)
+                                        additional_lines = logic_rule_1.check_rule(additional_lines, content, statement, contract, function_key, logic_rule_1_list,f)
 
                                     ###### LOGIC RULE 2 ######
                                     if statement.type == 'VariableDeclarationStatement' and statement.variables \
@@ -129,34 +199,34 @@ def main():
                                                     and variable.typeName.type == 'ElementaryTypeName' \
                                                     and variable.typeName.name == 'bool':
                                                 additional_lines = logic_rule_2.check_rule(additional_lines, content,
-                                                                                           statements, statement,logic_rule_2_list,f)
+                                                                                           statements, statement, contract, function_key, logic_rule_2_list,f)
 
                                     ###### LOOP RULE 1 ######
                                     if statement.type == 'ForStatement':
                                         additional_lines = loop_rule_1.check_rule(additional_lines, content, statement,
-                                                                                  all_functions,loop_rule_1_list,f)
+                                                                                  all_functions, contract, function_key, loop_rule_1_list,f)
 
                                     ###### LOOP RULE 2 ######
                                     if statement.type in loop_statements:
-                                        additional_lines = loop_rule_2.check_rule(additional_lines, content, statement,loop_rule_2_list,f)
+                                        additional_lines = loop_rule_2.check_rule(additional_lines, content, statement, contract, function_key, loop_rule_2_list, f)
 
                                     ###### LOOP RULE 3 ######
                                     if statement.type == 'ForStatement':
-                                        additional_lines = loop_rule_3.check_rule(additional_lines, content, statement,loop_rule_3_list,f)
+                                        additional_lines = loop_rule_3.check_rule(additional_lines, content, statement, contract, function_key, loop_rule_3_list,f)
 
                                     ###### LOOP RULE 4 ######
                                     if statement.type == 'ForStatement':
-                                        additional_lines = loop_rule_4.check_rule(additional_lines, content, statement,loop_rule_4_list,f)
+                                        additional_lines = loop_rule_4.check_rule(additional_lines, content, statement, contract, function_key, loop_rule_4_list,f)
 
                                     ###### LOOP RULE 5 ######
                                     if statement.type == 'ForStatement':
-                                        additional_lines = loop_rule_5.check_rule(additional_lines, content, statement,loop_rule_5_list,f)
+                                        additional_lines = loop_rule_5.check_rule(additional_lines, content, statement, contract, function_key, loop_rule_5_list,f)
 
                                     ###### LOOP RULE 6 ######
                                     if statement.type == 'ForStatement':
                                         if first_for_statement is not None:
                                             additional_lines = loop_rule_6.check_rule(additional_lines, content,
-                                                                                      first_for_statement, statement,loop_rule_6_list,f)
+                                                                                      first_for_statement, statement, contract, function_key, loop_rule_6_list, f)
                                         first_for_statement = statement
                                     else:
                                         first_for_statement = None
@@ -169,17 +239,19 @@ def main():
         print('########################################################################')
         print('#########                SUMMARY OF RESULTS                    #########')
         print('########################################################################')
-        print('#########                     '+str(files.__len__())+'                         #########')
+        print('#########                   Total Contracts:'+str(files.__len__())+'                #########')
+        print('#########                   Error Contracts:'+str(error_contract_counter)+'                  #########')
         print('########################################################################')
-        print('######### number of instances                 logic rule 1: ' + str(logic_rule_1.get_instance_counter()))
-        print('######### number of instances                 logic rule 2: ' + str(logic_rule_2.get_instance_counter()))
-        print('######### number of instances                 loop rule 1: ' + str(loop_rule_1.get_instance_counter()))
-        print('######### number of instances                 loop rule 2: ' + str(loop_rule_2.get_instance_counter()))
-        print('######### number of instances                 loop rule 3: ' + str(loop_rule_3.get_instance_counter()))
-        print('######### number of instances                 loop rule 4: ' + str(loop_rule_4.get_instance_counter()))
-        print('######### number of instances                 loop rule 5: ' + str(loop_rule_5.get_instance_counter()))
-        print('######### number of instances                 loop rule 6: ' + str(loop_rule_6.get_instance_counter()))
-        print('######### number of instances                 recursion rule: ' + str(recursion_rule.get_instance_counter()))
+        print('######### logic rule 1: ' + str(logic_rule_1.get_instance_counter())+ " instances in " + str(logic_rule_1.logic1_dict_counter()) +' contracts')
+        print('######### logic rule 2: ' + str(logic_rule_2.get_instance_counter())+ " instances in " + str(logic_rule_2.logic2_dict_counter()) +' contracts')
+        print('######### loop rule 1:  ' + str(loop_rule_1.get_instance_counter())+ " instances in " + str(loop_rule_1.loop1_dict_counter()) +' contracts')
+        print('######### loop rule 2:  ' + str(loop_rule_2.get_instance_counter())+ " instances in " + str(loop_rule_2.loop2_dict_counter()) +' contracts')
+        print('######### loop rule 3:  ' + str(loop_rule_3.get_instance_counter())+ " instances in " + str(loop_rule_3.loop3_dict_counter()) +' contracts')
+        print('######### loop rule 4:  ' + str(loop_rule_4.get_instance_counter())+ " instances in " + str(loop_rule_4.loop4_dict_counter()) +' contracts')
+        print('######### loop rule 5:  ' + str(loop_rule_5.get_instance_counter())+ " instances in " + str(loop_rule_5.loop5_dict_counter()) +' contracts')
+        print('######### loop rule 6:  ' + str(loop_rule_6.get_instance_counter())+ " instances in " + str(loop_rule_6.loop6_dict_counter()) +' contracts')
+        print('######### recursion rule: ' + str(recursion_rule.get_instance_counter())+ " instances in " + str(recursion_rule.recursion_dict_counter()) +' contracts')
+        print('######### packing rule: ' + str(packing_rule.get_instance_counter())+ " instances in " + str(packing_rule.packing_dict_counter()) +' contracts')
         print('########################################################################')
         
         optimized_list=[logic_rule_1_list, logic_rule_2_list, loop_rule_1_list, loop_rule_2_list, loop_rule_3_list, loop_rule_4_list, loop_rule_5_list, loop_rule_6_list, recursion_rule_list, packing_rule_list]

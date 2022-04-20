@@ -14,12 +14,14 @@
 ############################################################
 
 import pprint
+from tkinter import Pack
 
 instance_counter = 0
 additional_lines = 0
+logic2_dict = {}
 
 
-def check_rule(added_lines, file_content, function_statements, statement, rule_list, file_name):
+def check_rule(added_lines, file_content, function_statements, statement, contract_name, function_key, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
     # Statement = bool variable declaration
@@ -31,7 +33,7 @@ def check_rule(added_lines, file_content, function_statements, statement, rule_l
                 if function_statement.condition.name == variable.name and statement.initialValue:
                     # if the value is not modified afterwards
                     if not variable_is_modified_afterwards(function_statements, function_statement, statement, variable.name):
-                        eliminate_bool_variable(file_content, statement, function_statement)
+                        eliminate_bool_variable(file_content, statement, function_statement, contract_name, function_key)
                         rule_list.append(file_name)
     return additional_lines
 
@@ -59,13 +61,16 @@ def statement_changes_variable(statement, variable_name):
     return True
 
 
-def eliminate_bool_variable(file_content, statement, if_statement):
+def eliminate_bool_variable(file_content, statement, if_statement, contract_name, function_key):
     global instance_counter, additional_lines
+    global logic2_dict
+    
+    logic2_dict[contract_name] = 1
     instance_counter += 1
 
     statement_line = statement.loc['start']['line'] - 1 + additional_lines
     if_statement_line = if_statement.loc['start']['line'] - 1 + additional_lines
-    print('### found instance of logic rule 2; lines: ' + str(statement_line) + ' and ' + str(if_statement_line))
+    print('### Applied LOGIC_RULE2 rule at '+contract_name+'--'+function_key+': line: '+ str(statement_line) + ' and ' + str(if_statement_line))
 
     tabs_to_insert = ' ' * statement.loc['start']['column']
 
@@ -89,3 +94,11 @@ def eliminate_bool_variable(file_content, statement, if_statement):
 def get_instance_counter():
     global instance_counter
     return instance_counter
+
+def logic2_dict_counter():
+    global logic2_dict
+    logic2_count = 0
+    for item in logic2_dict.keys():
+        if logic2_dict[item]== 1 :
+            logic2_count += 1
+    return logic2_count

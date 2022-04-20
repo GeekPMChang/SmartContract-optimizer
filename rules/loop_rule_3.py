@@ -17,10 +17,12 @@
 
 additional_lines = 0
 instance_counter = 0
+loop3_dict = {}
 
 
-def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
+def check_rule(added_lines, file_content, loop_statement, contract_name, function_key, rule_list, file_name):
     global additional_lines, instance_counter
+    global loop3_dict
     additional_lines = added_lines
 
     if (loop_statement.conditionExpression and loop_statement.conditionExpression.type == 'BinaryOperation'
@@ -61,11 +63,12 @@ def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
                                     or (loop_statement.conditionExpression.operator == '>' and 0 < gt <= 8) \
                                     or (loop_statement.conditionExpression.operator == '>=' and 0 < gt < 8):
                                 unroll_loop(file_content, loop_statement, initial_value,
-                                            loop_statement.conditionExpression.operator, exit_value, loop_var_name,rule_list, file_name)
+                                            loop_statement.conditionExpression.operator, exit_value, loop_var_name, contract_name, function_key,rule_list, file_name)
                             else:
-                                print('### found instance of loop rule 3; line: ' + str(
+                                print('### Applied LOOP_RULE3 rule at '+contract_name+' '+function_key+': line: ' + str(
                                     loop_statement.loc['start']['line']))
                                 instance_counter += 1
+                                loop3_dict[contract_name] = 1
                                 rule_list.append(file_name)
                                 # add comment
                                 loop_location = loop_statement.loc
@@ -81,8 +84,9 @@ def check_rule(added_lines, file_content, loop_statement, rule_list, file_name):
     return additional_lines
 
 
-def unroll_loop(file_content, loop_statement, start_value, condition_operator, exit_value, var_name,rule_list, file_name):
+def unroll_loop(file_content, loop_statement, start_value, condition_operator, exit_value, var_name, contract_name, function_key ,rule_list, file_name):
     global additional_lines, instance_counter
+    global loop3_dict
 
     loop_statements = {}
     if loop_statement.body and loop_statement.body.type == 'Block':
@@ -126,8 +130,9 @@ def unroll_loop(file_content, loop_statement, start_value, condition_operator, e
         file_content.insert(loop_line, tabs_to_insert + comment_line1)
         additional_lines += 2
 
-    print('### found instance of loop rule 3; line: ' + str(loop_statement.loc['start']['line']))
+    print('### Applied LOOP_RULE3 rule at '+contract_name+'--'+function_key+': line: ' + str(loop_statement.loc['start']['line']))
     instance_counter += 1
+    loop3_dict[contract_name] = 1
     rule_list.append(file_name)
 
 
@@ -210,3 +215,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def loop3_dict_counter():
+    global loop3_dict
+    loop3_count = 0
+    for item in loop3_dict.keys():
+        if loop3_dict[item]== 1 :
+            loop3_count += 1
+    return loop3_count

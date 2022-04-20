@@ -15,9 +15,10 @@
 
 instance_counter = 0
 additional_lines = 0
+logic1_dict = {}
 
 
-def check_rule(added_lines, file_content, statement, rule_list, file_name):
+def check_rule(added_lines, file_content, statement, contract_name, function_key, rule_list, file_name):
     global additional_lines
     additional_lines = added_lines
     if statement.condition.type == 'BinaryOperation' \
@@ -25,16 +26,19 @@ def check_rule(added_lines, file_content, statement, rule_list, file_name):
             and statement.condition.right.type == 'UnaryOperation' and statement.condition.right.operator == '!':
         # found instance of deMorgan
         if statement.condition.operator == '&&' or statement.condition.operator == '||':
-            apply_law_of_de_morgan(statement, file_content)
+            apply_law_of_de_morgan(statement, file_content, contract_name, function_key)
             rule_list.append(file_name)
     return additional_lines
 
 
-def apply_law_of_de_morgan(statement, file_content):
+def apply_law_of_de_morgan(statement, file_content, contract_name, function_key):
     global instance_counter, additional_lines
+    global logic1_dict
+    
     instance_counter += 1
+    logic1_dict[contract_name] = 1
     statement_line = statement.loc['start']['line'] - 1 + additional_lines
-    print('### found instance of logic rule 1; line: ' + str(statement_line))
+    print('### Applied LOGIC_RULE1 rule at '+contract_name+'--'+function_key+': line: ' + str(statement_line))
 
     new_operator = '&&'
     if statement.condition.operator == '&&':
@@ -79,3 +83,11 @@ def get_instance_counter():
 def get_additional_lines():
     global additional_lines
     return additional_lines
+
+def logic1_dict_counter():
+    global logic1_dict
+    logic1_count = 0
+    for item in logic1_dict.keys():
+        if logic1_dict[item]== 1 :
+            logic1_count += 1
+    return logic1_count

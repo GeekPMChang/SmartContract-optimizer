@@ -1,6 +1,7 @@
 import sys
 import time
 import pprint
+from tkinter.filedialog import test
 
 from web3.providers.eth_tester import EthereumTesterProvider
 from web3 import Web3
@@ -9,6 +10,20 @@ import solcx
 
 # calculate gasUsed in smart contract deployment --completed
 # calculate gasUsed in fuction call 
+test_strs=[]
+test_prices=[]
+add1='0xfe23fb9b286e37bde8d325d16fa4b4d496587f6a'
+add2='0xdb6fd84921272e288998a4b321b6c187bbd2ba4c'
+
+with open('./all.txt','r') as f:
+    name_list=f.read()
+
+name_catalog=name_list.split('\n')
+for i in range(0,50):
+    test_strs.append(name_catalog[i])
+    test_prices.append(i*10)
+
+
 def compile_source_file(contract_source):
 
     # get the right description of version
@@ -88,9 +103,9 @@ def calculate_gasUsed_transaction(file_path) :
     
     address=InforDeploy['contractAddress']
     store_var_contract = w3.eth.contract(address=address, abi=contract_interface["abi"])
-
-    gasUsed_transaction = store_var_contract.functions.setVar(255).estimateGas()
-    print(f'Gas estimate to transact with setVar: {gasUsed_transaction}')
+    
+    gasUsed_transaction = store_var_contract.functions.transferFrom(add1,add2,1000).estimateGas()
+    print(f'Gas estimate to transact with updatePrices: {gasUsed_transaction}')
 
     
 
@@ -126,5 +141,8 @@ def calculate_gasUsed_deployment(contract_source) :
         'transactionIndex'
     }
     '''
-    
-calculate_gasUsed_transaction()
+# print('Original smart contract:')
+# calculate_gasUsed_transaction('./input/BankToken.sol')
+
+# print('Optimized smart contract:')
+# alculate_gasUsed_transaction('./output/optimized/BankToken.sol')

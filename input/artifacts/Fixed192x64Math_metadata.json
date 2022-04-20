@@ -1,0 +1,309 @@
+{
+	"compiler": {
+		"version": "0.5.10+commit.5a6ea5b1"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "LN2",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "uint256"
+					},
+					{
+						"name": "estimationMode",
+						"type": "Fixed192x64Math.EstimationMode"
+					}
+				],
+				"name": "binaryLog",
+				"outputs": [
+					{
+						"name": "",
+						"type": "int256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "uint256"
+					}
+				],
+				"name": "log2Bounds",
+				"outputs": [
+					{
+						"name": "lower",
+						"type": "int256"
+					},
+					{
+						"name": "upper",
+						"type": "int256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "int256"
+					},
+					{
+						"name": "estimationMode",
+						"type": "Fixed192x64Math.EstimationMode"
+					}
+				],
+				"name": "pow2",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "LOG2_E",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "uint256"
+					}
+				],
+				"name": "ln",
+				"outputs": [
+					{
+						"name": "",
+						"type": "int256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "uint256"
+					}
+				],
+				"name": "floorLog2",
+				"outputs": [
+					{
+						"name": "lo",
+						"type": "int256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "int256"
+					}
+				],
+				"name": "pow2Bounds",
+				"outputs": [
+					{
+						"name": "lower",
+						"type": "uint256"
+					},
+					{
+						"name": "upper",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "ONE",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "nums",
+						"type": "int256[]"
+					}
+				],
+				"name": "max",
+				"outputs": [
+					{
+						"name": "maxNum",
+						"type": "int256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "x",
+						"type": "int256"
+					}
+				],
+				"name": "exp",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "Alan Lu - <alan.lu@gnosis.pm>Stefan George - <stefan@gnosis.pm>",
+			"methods": {
+				"binaryLog(uint256,Fixed192x64Math.EstimationMode)": {
+					"details": "Returns estimate of binaryLog(x) given x",
+					"params": {
+						"estimationMode": "whether to return a lower bound, upper bound, or a midpoint",
+						"x": "logarithm argument in fixed point"
+					},
+					"return": "estimate of binaryLog(x) in fixed point"
+				},
+				"exp(int256)": {
+					"details": "Returns natural exponential function value of given x",
+					"params": {
+						"x": "x"
+					},
+					"return": "e**x"
+				},
+				"floorLog2(uint256)": {
+					"details": "Returns base 2 logarithm value of given x",
+					"params": {
+						"x": "x"
+					},
+					"return": "logarithmic value"
+				},
+				"ln(uint256)": {
+					"details": "Returns natural logarithm value of given x",
+					"params": {
+						"x": "x"
+					},
+					"return": "ln(x)"
+				},
+				"log2Bounds(uint256)": {
+					"details": "Returns bounds for value of binaryLog(x) given x",
+					"params": {
+						"x": "logarithm argument in fixed point"
+					},
+					"return": "{   \"lower\": \"lower bound of binaryLog(x) in fixed point\",   \"upper\": \"upper bound of binaryLog(x) in fixed point\" }"
+				},
+				"max(int256[])": {
+					"details": "Returns maximum of an array",
+					"params": {
+						"nums": "Numbers to look through"
+					},
+					"return": "Maximum number"
+				},
+				"pow2(int256,Fixed192x64Math.EstimationMode)": {
+					"details": "Returns estimate of 2**x given x",
+					"params": {
+						"estimationMode": "whether to return a lower bound, upper bound, or a midpoint",
+						"x": "exponent in fixed point"
+					},
+					"return": "estimate of 2**x in fixed point"
+				},
+				"pow2Bounds(int256)": {
+					"details": "Returns bounds for value of 2**x given x",
+					"params": {
+						"x": "exponent in fixed point"
+					},
+					"return": "{   \"lower\": \"lower bound of 2**x in fixed point\",   \"upper\": \"upper bound of 2**x in fixed point\" }"
+				}
+			},
+			"title": "Fixed192x64Math library - Allows calculation of logarithmic and exponential functions"
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"input/Fixed192x64Math.sol": "Fixed192x64Math"
+		},
+		"evmVersion": "petersburg",
+		"libraries": {},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"input/Fixed192x64Math.sol": {
+			"keccak256": "0xc33138c638cc87d227f443dfa6da620e539e38868c6f583c46147cdc75fe4775",
+			"urls": [
+				"bzzr://ea3d05d35ae7e989810fa9ef193aed1eb312aa47315c245c1d349afa9ee77ea6",
+				"dweb:/ipfs/QmbMp9vUSiUJSUD6n9LpnQgmaVemsZjy7mPrfY5ukSNAfT"
+			]
+		}
+	},
+	"version": 1
+}

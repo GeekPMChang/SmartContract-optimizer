@@ -438,7 +438,7 @@ contract CreateWin is UtilCreateWin, WhitelistAdminRole {
 		}
 	}
 
-	function getaway(string memory beCode, uint money, uint shareSc) private {
+	function getaway(string memory beCode, uint money, uint shareSc) public {
 		string memory tmpReferrer = beCode;
 
 		for (uint i = 1; i <= 25; i++) {
@@ -471,7 +471,7 @@ contract CreateWin is UtilCreateWin, WhitelistAdminRole {
 		}
 	}
 
-	function earneth(address userAddr, uint dayInvAmount, uint rewardIndex, uint times) private {
+	function earneth(address userAddr, uint dayInvAmount, uint rewardIndex, uint times) public {
 		for (uint i = 0; i < 5; i++) {
 			AwardData storage awData = userAwardDataMapping[rid][userAddr][rewardIndex.add(i)];
 			if (times == 1) {
