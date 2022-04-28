@@ -8,6 +8,7 @@ import json
 import ssl
 
 from solidity_parser import parser
+from contract_verify import check_eq
 
 import evaluation
 from optimized_file_output import optimizedFileOutput
