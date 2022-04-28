@@ -1,6 +1,6 @@
-# python-solidity-optimizer
+# smart-contract-optimizer
 
-An automated Solidity-code optimizer based on the diploma thesis "Optimizing Solidity Smart Contracts".
+An automated smart contract code optimizer
 
 [![License: GPL v3][license-badge]][license-badge-url]
 
